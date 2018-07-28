@@ -8,7 +8,7 @@ todo
 
 ## Config
 
-By default, bcpol use `./bcpol.json` as the configuration. One sample:
+By default, bcpol uses `./bcpol.json` as the configuration. One sample:
 
 ```
 $ cat bcpol.json
@@ -37,7 +37,7 @@ $ bcpol deploy
 }
 ```
 
-After deploying, we will get the new created node IDs. These information will
+After deploying, we will get the new created node IDs. This information will
 also be written into a file `deploy.output` for later use.  (e.g. `stats`)
 
 ## Stop/Start/etc
@@ -101,9 +101,9 @@ $ bcpol stats
 
 ## Download
 
-We can download the final state (data), and use it in later testing. For
-example, use `snapshot-0728.data` as the initial states in next version of
-docker image.
+We can download the final state (data) of one testing session, and use it in
+later testing. For example, use `snapshot-0728.data` as the initial states
+in next version of docker image.
 
 ```
 $ bcpol stopall

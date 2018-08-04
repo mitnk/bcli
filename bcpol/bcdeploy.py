@@ -78,7 +78,7 @@ def do_deploy(args):
     for region_name in instance_info:
         sg = awsutils.create_security_group(region_name, sg_name, ip_list)
         for instance in instance_info[region_name]:
-            logging.info('assign new SG to instance: {}'.format(instance))
+            logging.info('assign new SG to instance: {}'.format(instance.id))
             sg_list = [x['GroupId'] for x in instance.security_groups]
             sg_list.append(sg.id)
             instance.modify_attribute(Groups=sg_list)

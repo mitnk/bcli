@@ -22,7 +22,6 @@ $ cat bcpol.json
 ## Deploy
 
 ```
-$ bcpol deploy
 $ ./bcpol.py deploy
 [INFO][2018-08-04 21:02:52,518] creating 3 nodes in ap-southeast-1
 [INFO][2018-08-04 21:02:54,347] created: ['i-06e91c0e14bca62bf', 'i-02b7950e91fa9f5d0', 'i-0d45c78728ffb8503']

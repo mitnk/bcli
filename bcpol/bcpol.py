@@ -16,6 +16,8 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='[%(levelname)s][%(asctime)s] %(message)s',
     )
+    logging.getLogger('botocore').setLevel(logging.WARN)
+    logging.getLogger('boto3').setLevel(logging.WARN)
 
     parser = argparse.ArgumentParser(prog='bcpol')
     parser.set_defaults(func=main)

@@ -29,3 +29,21 @@ def get_instance_info(region_name, instance_id):
     result = ec2.instances.filter(InstanceIds=[instance_id])
     infos = [x for x in result]
     return infos[0]
+
+
+def create_security_group(region_name, session_id, ip_list):
+    """
+    1. fetch IP Address list for all nodes
+    2. create a SG to let these nodes can access each other
+    """
+    ec2 = boto3.resource('ec2', region_name=region_name)
+    sec_group = ec2.create_security_group(
+        GroupName='sg_bcpol_{}'.format(session_id), Description='blockcain SG')
+    for ipv4 in ip_list:
+        sec_group.authorize_ingress(
+            CidrIp='{}/32'.format(ipv4),
+            IpProtocol='-1',
+            FromPort=-1,
+            ToPort=-1
+        )
+    return sec_group

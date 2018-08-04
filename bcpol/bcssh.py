@@ -7,14 +7,8 @@ import bcutils
 import subprocess
 
 
-def ssh_to_node(region_name, node_id):
-    info = awsutils.get_instance_info(region_name, node_id)
-    if info.state['Name'] != 'running':
-        print('node is not ready')
-        exit(0)
-
+def ssh_to_node(region_name, ip_address):
     key_path = bcutils.get_key_path(region_name)
-    ip_address = info.public_ip_address
     cmd = ['ssh', '-i', key_path, '-o', '"StrictHostKeyChecking no"',
            'ubuntu@{}'.format(ip_address)]
     print(' '.join(cmd))
@@ -22,7 +16,7 @@ def ssh_to_node(region_name, node_id):
 
 def do_ssh(args):
     try:
-        region_name, node_id = bcutils.get_first_node_id()
+        region_name, node_info = bcutils.get_one_node_info()
     except (ValueError, TypeError):
         raise NotImplementedError
-    ssh_to_node(region_name, node_id)
+    ssh_to_node(region_name, node_info['ipv4'])

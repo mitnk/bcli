@@ -1,0 +1,4 @@
+[all-my-hosts]
+tk2
+bili
+localhost  ansible_connection=local

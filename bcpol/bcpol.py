@@ -5,6 +5,7 @@ import logging
 from bcdeploy import do_deploy
 from bcssh import do_ssh
 from bcinfo import get_info
+from bcterminate import do_terminate
 
 
 def main(args):
@@ -23,7 +24,8 @@ if __name__ == '__main__':
     parser.set_defaults(func=main)
     subparsers = parser.add_subparsers()
 
-    parser_sub = subparsers.add_parser('deploy', help='Deploy blockchain to EC2')
+    parser_sub = subparsers.add_parser('deploy',
+                                       help='Deploy blockchain to EC2')
     parser_sub.add_argument('--config', '-f', type=str, default='bcpol.json',
                             help='specify the config file')
     parser_sub.set_defaults(func=do_deploy)
@@ -35,6 +37,10 @@ if __name__ == '__main__':
     parser_sub.add_argument('name', nargs='?', type=str, default='',
                             help='specify which node to connect')
     parser_sub.set_defaults(func=do_ssh)
+
+    parser_sub = subparsers.add_parser('terminate',
+                                       help='terminate all AWS resources')
+    parser_sub.set_defaults(func=do_terminate)
 
     args = parser.parse_args()
     args.func(args)

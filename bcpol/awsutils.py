@@ -8,7 +8,7 @@ def create_ec2_instances(region_name, num, session_id, dir_sessions):
     ec2 = boto3.resource('ec2', region_name=region_name)
     key_file_local = os.path.join(dir_sessions, 'key-{}.pem'.format(region_name))
     key_name = 'pcpol-session-{}'.format(session_id)
-    with open(key_file_local,'wb') as f:
+    with open(key_file_local, 'wb') as f:
         key_pair = ec2.create_key_pair(KeyName=key_name)
         f.write(key_pair.key_material.encode('utf-8'))
     os.chmod(key_file_local, 0o600)
@@ -24,21 +24,22 @@ def create_ec2_instances(region_name, num, session_id, dir_sessions):
     return inst_list
 
 
-def get_instance_info(region_name, instance_id):
+def get_instances_info(region_name, instance_ids):
+    if not isinstance(instance_ids, list):
+        instance_ids = [instance_ids]
     ec2 = boto3.resource('ec2', region_name=region_name)
-    result = ec2.instances.filter(InstanceIds=[instance_id])
-    infos = [x for x in result]
-    return infos[0]
+    result = ec2.instances.filter(InstanceIds=instance_ids)
+    return [x for x in result]
 
 
-def create_security_group(region_name, session_id, ip_list):
+def create_security_group(region_name, sg_name, ip_list):
     """
     1. fetch IP Address list for all nodes
     2. create a SG to let these nodes can access each other
     """
     ec2 = boto3.resource('ec2', region_name=region_name)
     sec_group = ec2.create_security_group(
-        GroupName='sg_bcpol_{}'.format(session_id), Description='blockcain SG')
+        GroupName=sg_name, Description='blockcain SG')
     for ipv4 in ip_list:
         sec_group.authorize_ingress(
             CidrIp='{}/32'.format(ipv4),
@@ -47,3 +48,9 @@ def create_security_group(region_name, session_id, ip_list):
             ToPort=-1
         )
     return sec_group
+
+
+def delete_security_groups(region_name, sg_id_list):
+    ec2 = boto3.resource('ec2', region_name=region_name)
+    for sg_id in sg_id_list:
+        ec2.delete_security_group(GroupName=sg_id)

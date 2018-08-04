@@ -1,10 +1,12 @@
 import json
+import os.path
 
 import constants
 
 
 def get_key_path(region_name):
-    return './sessions/latest/key-{}.pem'.format(region_name)
+    key_file = './sessions/latest/key-{}.pem'.format(region_name)
+    return os.path.abspath(key_file)
 
 
 def get_node_info(node_id=None):
@@ -33,3 +35,7 @@ def get_security_group_name(session_id=None):
     if not session_id:
         session_id = get_session_id()
     return '{}{}'.format(constants.SG_PREFIX, session_id)
+
+
+def get_deployed_info_file():
+    return './sessions/latest/deploy.json'

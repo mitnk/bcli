@@ -1,4 +1,5 @@
 import logging
+import os
 
 import awsutils
 import constants
@@ -10,6 +11,11 @@ def do_terminate(args):
     1. terminate all EC2 instances
     2. terminate all security groups
     """
+    file_deployed_info = bcutils.get_deployed_info_file()
+    if not os.path.exists(file_deployed_info):
+        print('deployed info file not found')
+        exit(1)
+
     nodes_info = bcutils.get_all_nodes_info()
     for region_name in nodes_info:
         sgs_to_delete = set()

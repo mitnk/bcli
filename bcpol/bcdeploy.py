@@ -1,8 +1,8 @@
-import time
 import datetime
 import json
 import logging
 import os.path
+import time
 
 import awsutils
 import bcutils
@@ -12,6 +12,20 @@ from collections import defaultdict
 
 def generate_session_id():
     return datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+
+
+def generate_ansible_inventory_file(dir_session, nodes_info):
+    file_inv = os.path.join(dir_session, "ansible.ini")
+    with open(file_inv, 'w') as f:
+        for region_name in nodes_info:
+            key_file = bcutils.get_key_path(region_name)
+            f.write('[{}]\n'.format(region_name))
+            for item in nodes_info[region_name]:
+                f.write('{}  '.format(item['id']))
+                f.write('ansible_host={}  '.format(item['ipv4']))
+                f.write('ansible_user=ubuntu  ')
+                f.write('ansible_ssh_private_key_file={}\n'.format(key_file))
+            f.write('\n')
 
 
 def do_deploy(args):
@@ -26,14 +40,14 @@ def do_deploy(args):
         exit(1)
 
     session_id = generate_session_id()
-    dir_sessions = './sessions/{}'.format(session_id)
-    if not os.path.exists(dir_sessions):
-        os.makedirs(dir_sessions, exist_ok=True)
+    dir_session = './sessions/{}'.format(session_id)
+    if not os.path.exists(dir_session):
+        os.makedirs(dir_session, exist_ok=True)
     symlink_latest = os.path.abspath('./sessions/latest')
     if os.path.lexists(symlink_latest):
         os.remove(symlink_latest)
     os.symlink(
-        os.path.abspath(dir_sessions),
+        os.path.abspath(dir_session),
         symlink_latest,
         target_is_directory=True,
     )
@@ -43,7 +57,7 @@ def do_deploy(args):
     for region_name, num in configs['deploy'].get('nodes', {}).items():
         logging.info('creating {} nodes in {}'.format(num, region_name))
         node_id_list = awsutils.create_ec2_instances(
-            region_name, num, session_id, dir_sessions)
+            region_name, num, session_id, dir_session)
         node_id_list = [x.instance_id for x in node_id_list]
         logging.info('created: {}'.format(node_id_list))
         for x in node_id_list:
@@ -83,10 +97,12 @@ def do_deploy(args):
             sg_list.append(sg.id)
             instance.modify_attribute(Groups=sg_list)
 
-    file_deploy = os.path.join(dir_sessions, 'deploy.json')
+    file_deploy = os.path.join(dir_session, 'deploy.json')
     info = {
         'session_id': session_id,
         'nodes': nodes_info,
     }
     with open(file_deploy, 'wb') as f:
         f.write(json.dumps(info, indent=4).encode())
+
+    generate_ansible_inventory_file(dir_session, nodes_info)

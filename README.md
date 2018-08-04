@@ -2,7 +2,63 @@
 
 Blockchain polish (testing) toolset.
 
-## Config
+## Set Up
+
+### Setup bcpol with Python Virtual ENV
+
+**NOTE:** Python 3 needed.
+
+```
+$ python -m venv ~/.local/share/bcpol
+$ source ~/.local/share/bcpol/bin/activate
+# now we are inside the Virtual ENV
+(bcpol)$
+
+# cd to project root dir, and then
+(bcpol)$ cd ~/projects/bcpol
+(bcpol)$ pip install -U pip
+(bcpol)$ pip install -r requirements.txt
+
+# cd to bcpol package
+(bcpol)$ cd bcpol
+(bcpol)$ ./bcpol.py --help
+```
+
+You should see output like the following:
+
+```
+usage: bcpol [-h] {deploy,info,run,terminate} ...
+
+positional arguments:
+  {deploy,info,ssh,run,terminate}
+    deploy              Deploy blockchain to EC2
+    info                get states of BC
+    run                 run a command
+    terminate           terminate all AWS resources
+```
+
+### Setup AWS Credential
+
+**Option 1 - With Config files**
+
+In file `~/.aws/credentials`:
+
+```
+[default]
+aws_access_key_id = YOUR_KEY
+aws_secret_access_key = YOUR_SECRET
+```
+
+**Option 2 - With System Envs**
+
+```
+$ export AWS_ACCESS_KEY_ID=<YOUR-KEY>
+$ export AWS_SECRET_ACCESS_KEY=<YOUR-SECRET>
+```
+
+See more in [boto3 docs on environment configs](http://boto3.readthedocs.io/en/latest/guide/configuration.html#environment-variable-configuration).
+
+## Configs for Deploying
 
 By default, bcpol uses `./bcpol.json` as the configuration. One sample:
 
@@ -11,15 +67,15 @@ $ cat bcpol.json
 {
     "deploy": {
         "nodes": {
-            "us-west-1": 3,
-            "ap-northeast-1": 2
+            "us-west-1": 2,
+            "ap-southeast-1": 3
         },
         "image": "ethereum/client-go"
     }
 }
 ```
 
-## Deploy
+## Deploy EC2 Instances
 
 ```
 $ ./bcpol.py deploy
@@ -43,6 +99,48 @@ $ ./bcpol.py deploy
 
 After deploying, we will get the new created node IDs. This information will
 also be written into a local file for later use.  (e.g. `info`)
+
+## Use Ansible
+
+We have generated the Ansible’s inventory file after doing `bcpol.py deploy`:
+
+```
+(bcpol)$ cat sessions/latest/ansible.ini
+[us-west-1]
+i-00fdc0553bd437015  ansible_host=54.67.111.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-us-west-1.pem
+i-03bc8a0207f119257  ansible_host=54.153.8.243  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-us-west-1.pem
+
+[ap-southeast-1]
+i-0cf3ae93815cf8587  ansible_host=52.221.188.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-ap-southeast-1.pem
+...
+```
+
+With this Ubuntu image, we have to run following command first to make ansible
+work properly.
+
+```
+(bcpol)$ ansible -i sessions/latest/ansible.ini all -a hostname
+i-0cf3ae93815cf8587 | FAILED! => {
+    "changed": false,
+    "module_stderr": "Shared connection to 52.221.188.215 closed.\r\n",
+    "module_stdout": "/bin/sh: 1: /usr/bin/python: not found\r\n",
+    "msg": "MODULE FAILURE",
+...
+
+(bcpol)$ ./bcpol.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
+[INFO][2018-08-05 00:29:20,379] run cmd on i-00fdc0553bd437015 ...
+[INFO][2018-08-05 00:29:23,668] run cmd on i-03bc8a0207f119257 ...
+[INFO][2018-08-05 00:29:26,674] run cmd on i-0cf3ae93815cf8587 ...
+[INFO][2018-08-05 00:29:27,841] run cmd on i-0c4c41acab493f2e8 ...
+[INFO][2018-08-05 00:29:29,063] run cmd on i-0e3bacc2d4efa7127 ...
+
+(bcpol)$ ansible -i sessions/latest/ansible.ini all -a hostname
+i-0e3bacc2d4efa7127 | SUCCESS | rc=0 >>
+ip-172-31-12-15
+i-0c4c41acab493f2e8 | SUCCESS | rc=0 >>
+ip-172-31-14-56
+...
+```
 
 ## Get Information
 

@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser_sub = subparsers.add_parser('run', help='run a command')
     parser_sub.add_argument('cmd', nargs='?', type=str, default='',
                             help='run a command via ssh and exit')
-    parser_sub.add_argument('--node', type=str, required=True,
+    parser_sub.add_argument('--node', type=str, default='all',
                             help='specify which node to connect')
     parser_sub.set_defaults(func=do_run)
 

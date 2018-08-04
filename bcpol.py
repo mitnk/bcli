@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import logging
 
 from deploy import do_deploy
 
@@ -9,6 +10,11 @@ def main(args):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(levelname)s][%(asctime)s] %(message)s',
+    )
+
     parser = argparse.ArgumentParser(prog='bcpol')
     parser.set_defaults(func=main)
     subparsers = parser.add_subparsers()

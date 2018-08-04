@@ -5,6 +5,7 @@ import logging
 from bcdeploy import do_deploy
 from bcssh import do_ssh
 from bcinfo import get_info
+from bcrun import do_run
 from bcterminate import do_terminate
 
 
@@ -37,6 +38,13 @@ if __name__ == '__main__':
     parser_sub.add_argument('name', nargs='?', type=str, default='',
                             help='specify which node to connect')
     parser_sub.set_defaults(func=do_ssh)
+
+    parser_sub = subparsers.add_parser('run', help='run a command')
+    parser_sub.add_argument('cmd', nargs='?', type=str, default='',
+                            help='run a command via ssh and exit')
+    parser_sub.add_argument('--node', type=str, required=True,
+                            help='specify which node to connect')
+    parser_sub.set_defaults(func=do_run)
 
     parser_sub = subparsers.add_parser('terminate',
                                        help='terminate all AWS resources')

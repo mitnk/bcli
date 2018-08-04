@@ -21,13 +21,13 @@ if __name__ == '__main__':
     logging.getLogger('botocore').setLevel(logging.WARN)
     logging.getLogger('boto3').setLevel(logging.WARN)
 
-    parser = argparse.ArgumentParser(prog='bcpol')
+    parser = argparse.ArgumentParser(prog='bcli')
     parser.set_defaults(func=main)
     subparsers = parser.add_subparsers()
 
     parser_sub = subparsers.add_parser('deploy',
                                        help='Deploy blockchain to EC2')
-    parser_sub.add_argument('--config', '-f', type=str, default='bcpol.json',
+    parser_sub.add_argument('--config', '-f', type=str, default='bcli.json',
                             help='specify the config file')
     parser_sub.set_defaults(func=do_deploy)
 

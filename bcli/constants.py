@@ -1,4 +1,4 @@
-SG_PREFIX = 'bcpol-'
+SG_PREFIX = 'bcli-'
 
 IMAGES = {
     'us-west-1': 'ami-4aa04129',

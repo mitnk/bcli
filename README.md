@@ -1,33 +1,33 @@
-# bcpol
+# bcli
 
 Blockchain polish (testing) toolset.
 
 ## Set Up
 
-### Setup bcpol with Python Virtual ENV
+### Setup bcli with Python Virtual ENV
 
 **NOTE:** Python 3 needed.
 
 ```
-$ python -m venv ~/.local/share/bcpol
-$ source ~/.local/share/bcpol/bin/activate
+$ python -m venv ~/.local/share/bcli
+$ source ~/.local/share/bcli/bin/activate
 # now we are inside the Virtual ENV
-(bcpol)$
+(bcli)$
 
 # cd to project root dir, and then
-(bcpol)$ cd ~/projects/bcpol
-(bcpol)$ pip install -U pip
-(bcpol)$ pip install -r requirements.txt
+(bcli)$ cd ~/projects/bcli
+(bcli)$ pip install -U pip
+(bcli)$ pip install -r requirements.txt
 
-# cd to bcpol package
-(bcpol)$ cd bcpol
-(bcpol)$ ./bcpol.py --help
+# cd to bcli package
+(bcli)$ cd bcli
+(bcli)$ ./bcli.py --help
 ```
 
 You should see output like the following:
 
 ```
-usage: bcpol [-h] {deploy,info,run,terminate} ...
+usage: bcli [-h] {deploy,info,run,terminate} ...
 
 positional arguments:
   {deploy,info,ssh,run,terminate}
@@ -60,17 +60,16 @@ See more in [boto3 docs on environment configs](http://boto3.readthedocs.io/en/l
 
 ## Configs for Deploying
 
-By default, bcpol uses `./bcpol.json` as the configuration. One sample:
+By default, bcli uses `./bcli.json` as the configuration. One sample:
 
 ```
-$ cat bcpol.json
+$ cat bcli.json
 {
     "deploy": {
         "nodes": {
             "us-west-1": 2,
             "ap-southeast-1": 3
-        },
-        "image": "ethereum/client-go"
+        }
     }
 }
 ```
@@ -78,7 +77,7 @@ $ cat bcpol.json
 ## Deploy EC2 Instances
 
 ```
-$ ./bcpol.py deploy
+$ ./bcli.py deploy
 [INFO][2018-08-04 21:02:52,518] creating 3 nodes in ap-southeast-1
 [INFO][2018-08-04 21:02:54,347] created: ['i-06e91c0e14bca62bf', 'i-02b7950e91fa9f5d0', 'i-0d45c78728ffb8503']
 [INFO][2018-08-04 21:02:54,347] creating 2 nodes in us-west-1
@@ -102,16 +101,16 @@ also be written into a local file for later use.  (e.g. `info`)
 
 ## Use Ansible
 
-We have generated the Ansible’s inventory file after doing `bcpol.py deploy`:
+We have generated the Ansible’s inventory file after doing `bcli.py deploy`:
 
 ```
-(bcpol)$ cat sessions/latest/ansible.ini
+(bcli)$ cat sessions/latest/ansible.ini
 [us-west-1]
-i-00fdc0553bd437015  ansible_host=54.67.111.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-us-west-1.pem
-i-03bc8a0207f119257  ansible_host=54.153.8.243  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-us-west-1.pem
+i-00fdc0553bd437015  ansible_host=54.67.111.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-us-west-1.pem
+i-03bc8a0207f119257  ansible_host=54.153.8.243  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-us-west-1.pem
 
 [ap-southeast-1]
-i-0cf3ae93815cf8587  ansible_host=52.221.188.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcpol/bcpol/sessions/latest/key-ap-southeast-1.pem
+i-0cf3ae93815cf8587  ansible_host=52.221.188.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-ap-southeast-1.pem
 ...
 ```
 
@@ -119,7 +118,7 @@ With this Ubuntu image, we have to run following command first to make ansible
 work properly.
 
 ```
-(bcpol)$ ansible -i sessions/latest/ansible.ini all -a hostname
+(bcli)$ ansible -i sessions/latest/ansible.ini all -a hostname
 i-0cf3ae93815cf8587 | FAILED! => {
     "changed": false,
     "module_stderr": "Shared connection to 52.221.188.215 closed.\r\n",
@@ -127,14 +126,14 @@ i-0cf3ae93815cf8587 | FAILED! => {
     "msg": "MODULE FAILURE",
 ...
 
-(bcpol)$ ./bcpol.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
+(bcli)$ ./bcli.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
 [INFO][2018-08-05 00:29:20,379] run cmd on i-00fdc0553bd437015 ...
 [INFO][2018-08-05 00:29:23,668] run cmd on i-03bc8a0207f119257 ...
 [INFO][2018-08-05 00:29:26,674] run cmd on i-0cf3ae93815cf8587 ...
 [INFO][2018-08-05 00:29:27,841] run cmd on i-0c4c41acab493f2e8 ...
 [INFO][2018-08-05 00:29:29,063] run cmd on i-0e3bacc2d4efa7127 ...
 
-(bcpol)$ ansible -i sessions/latest/ansible.ini all -a hostname
+(bcli)$ ansible -i sessions/latest/ansible.ini all -a hostname
 i-0e3bacc2d4efa7127 | SUCCESS | rc=0 >>
 ip-172-31-12-15
 i-0c4c41acab493f2e8 | SUCCESS | rc=0 >>
@@ -147,7 +146,7 @@ ip-172-31-14-56
 After a deployment, we can manipulate specific nodes.
 
 ```
-$ ./bcpol.py info
+$ ./bcli.py info
 {
     "session_id": "20180804210252",
     "nodes": {
@@ -192,7 +191,7 @@ $ ./bcpol.py info
 ## Run a random command in one node
 
 ```
-$ ./bcpol.py run --node i-09a022fe64f9bd260 'free -m'
+$ ./bcli.py run --node i-09a022fe64f9bd260 'free -m'
               total        used        free      shared  buff/cache   available
 Mem:            486          50          39           1         396         400
 Swap:             0           0           0
@@ -201,7 +200,7 @@ Swap:             0           0           0
 ## Terminate
 
 ```
-$ ./bcpol.py terminate
+$ ./bcli.py terminate
 [INFO][2018-08-04 21:07:50,390] Terminating resources in us-west-1 ...
 [INFO][2018-08-04 21:07:51,822] - terminated i-07d82121fe957ef37
 [INFO][2018-08-04 21:07:52,414] - terminated i-09a022fe64f9bd260

@@ -45,7 +45,7 @@ $ ./bcpol.py deploy
 After deploying, we will get the new created node IDs. This information will
 also be written into a local file for later use.  (e.g. `info`)
 
-## info
+## Get Information
 
 After a deployment, we can manipulate specific nodes.
 
@@ -92,7 +92,7 @@ $ ./bcpol.py info
 }
 ```
 
-Run a random command in one node
+## Run a random command in one node
 
 ```
 $ ./bcpol.py run --node i-09a022fe64f9bd260 'free -m'

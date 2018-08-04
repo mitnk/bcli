@@ -1,6 +1,6 @@
 # bcli
 
-Blockchain polish (testing) toolset.
+A blockchain cli.
 
 ## Set Up
 

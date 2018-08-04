@@ -2,10 +2,6 @@
 
 Blockchain polish (testing) toolset.
 
-## The Goal
-
-todo
-
 ## Config
 
 By default, bcpol uses `./bcpol.json` as the configuration. One sample:
@@ -16,8 +12,7 @@ $ cat bcpol.json
     "deploy": {
         "nodes": {
             "us-west-1": 3,
-            "ap-northeast-1": 2,
-            "eu-west-2": 2
+            "ap-northeast-1": 2
         },
         "image": "ethereum/client-go"
     }
@@ -28,90 +23,95 @@ $ cat bcpol.json
 
 ```
 $ bcpol deploy
-{
-    "nodes": {
-        "us-west-1": ["93c0f1715", "d9575e92", "fc6e52ba"],
-        "ap-northeast-1": ["18267410f", "cd2426d5"],
-        "eu-west-2": ["f49e5f4b7", "eecd3017"]
-    }
-}
+$ ./bcpol.py deploy
+[INFO][2018-08-04 21:02:52,518] creating 3 nodes in ap-southeast-1
+[INFO][2018-08-04 21:02:54,347] created: ['i-06e91c0e14bca62bf', 'i-02b7950e91fa9f5d0', 'i-0d45c78728ffb8503']
+[INFO][2018-08-04 21:02:54,347] creating 2 nodes in us-west-1
+[INFO][2018-08-04 21:02:56,344] created: ['i-07d82121fe957ef37', 'i-09a022fe64f9bd260']
+[INFO][2018-08-04 21:02:56,344] checking state of instances ...
+[INFO][2018-08-04 21:03:09,942] instance ('ap-southeast-1', 'i-02b7950e91fa9f5d0') is ready
+[INFO][2018-08-04 21:03:10,378] instance ('ap-southeast-1', 'i-0d45c78728ffb8503') is ready
+[INFO][2018-08-04 21:03:10,967] instance ('us-west-1', 'i-07d82121fe957ef37') is ready
+[INFO][2018-08-04 21:03:11,572] instance ('us-west-1', 'i-09a022fe64f9bd260') is ready
+[INFO][2018-08-04 21:03:22,013] instance ('ap-southeast-1', 'i-06e91c0e14bca62bf') is ready
+[INFO][2018-08-04 21:03:23,898] all instances are ready now
+[INFO][2018-08-04 21:03:25,950] assign new SG to instance: i-02b7950e91fa9f5d0
+[INFO][2018-08-04 21:03:26,461] assign new SG to instance: i-0d45c78728ffb8503
+[INFO][2018-08-04 21:03:27,112] assign new SG to instance: i-06e91c0e14bca62bf
+[INFO][2018-08-04 21:03:29,803] assign new SG to instance: i-07d82121fe957ef37
+[INFO][2018-08-04 21:03:30,462] assign new SG to instance: i-09a022fe64f9bd260
 ```
 
 After deploying, we will get the new created node IDs. This information will
-also be written into a file `deploy.output` for later use.  (e.g. `stats`)
+also be written into a local file for later use.  (e.g. `info`)
 
-## Stop/Start/etc
+## info
 
 After a deployment, we can manipulate specific nodes.
 
 ```
-# stop one node in us-west-1
-$ bcpol stop d9575e92
-stopped
-$ bcpol start d9575e92
-started
+$ ./bcpol.py info
+{
+    "session_id": "20180804210252",
+    "nodes": {
+        "ap-southeast-1": [
+            {
+                "type": "t2.nano",
+                "tags": null,
+                "ipv4": "52.221.190.226",
+                "id": "i-02b7950e91fa9f5d0"
+            },
+            {
+                "type": "t2.nano",
+                "tags": null,
+                "ipv4": "54.254.129.197",
+                "id": "i-0d45c78728ffb8503"
+            },
+            {
+                "type": "t2.nano",
+                "tags": null,
+                "ipv4": "13.250.105.164",
+                "id": "i-06e91c0e14bca62bf"
+            }
+        ],
+        "us-west-1": [
+            {
+                "type": "t2.nano",
+                "tags": null,
+                "ipv4": "54.183.133.91",
+                "id": "i-07d82121fe957ef37"
+            },
+            {
+                "type": "t2.nano",
+                "tags": null,
+                "ipv4": "18.144.3.92",
+                "id": "i-09a022fe64f9bd260"
+            }
+        ]
+    }
+}
 ```
 
 Run a random command in one node
 
 ```
-$ bcpol run d9575e92 "whatever cmd we want"
-```
-
-## Monitoring
-
-There are two commands can be used to check the status of the blockchain.
-
-### check out the logs in one node
-
-```
-$ bcpol logs 93c0f1715
-
-WARN [07-27|15:41:57.437] Sanitizing cache to Go's GC limits       provided=1024 updated=330
-INFO [07-27|15:41:57.438] Maximum peer count                       ETH=25 LES=0 total=25
-INFO [07-27|15:41:57.440] Starting peer-to-peer node               instance=Geth/v1.8.13-unstable-93c0f171/linux-amd64/go1.10.3
-INFO [07-27|15:41:57.440] Allocated cache and file handles         database=/home/xxxx/gethDataDir/geth/chaindata cache=247 handles=512
-INFO [07-27|15:41:57.475] Initialised chain configuration          config="{ChainID: 917 Homestead: ...
-INFO [07-27|15:41:57.476] Disk storage enabled for ethash caches   dir=/home/xxxx/gethDataDir/geth/ethash count=3
-INFO [07-27|15:41:57.476] Disk storage enabled for ethash DAGs     dir=/home/xxxx/.ethash
-...
-```
-
-### Checkout the states of the whole blockchain
-
-```
-$ bcpol stats
-{
-    "peer_count": 6,
-    "difficulty": 10000,
-    "balances": {
-        "abc": 345.6789,
-        "eee": 1232356767.098,
-        "xxx": 50000.0
-    },
-    "mining": true,
-    "blocks": [
-        {"_id": 001, "hash": "abc", "ts": 1532747717.659872},
-        {"_id": 002, "hash": "eee", "ts": 1532747739.370306},
-        ...
-    ],
-    ...
-}
-```
-
-## Download
-
-We can download the final state (data) of one testing session, and use it in
-later testing. For example, use `snapshot-0728.data` as the initial states
-in next version of docker image.
-
-```
-$ bcpol stopall
-$ bcpol backup ./snapshot-0728.data
+$ ./bcpol.py run --node i-09a022fe64f9bd260 'free -m'
+              total        used        free      shared  buff/cache   available
+Mem:            486          50          39           1         396         400
+Swap:             0           0           0
 ```
 
 ## Terminate
 
-Use `bcpol stopall` to stop all activities of the blockchain.
-
-Use `bcpol terminate` to shutdown all nodes and terminate all resources on AWS.
+```
+$ ./bcpol.py terminate
+[INFO][2018-08-04 21:07:50,390] Terminating resources in us-west-1 ...
+[INFO][2018-08-04 21:07:51,822] - terminated i-07d82121fe957ef37
+[INFO][2018-08-04 21:07:52,414] - terminated i-09a022fe64f9bd260
+[INFO][2018-08-04 21:07:53,183] - deleted security groups: ['sg-7520030d']
+[INFO][2018-08-04 21:07:53,183] Terminating resources in ap-southeast-1 ...
+[INFO][2018-08-04 21:07:54,976] - terminated i-06e91c0e14bca62bf
+[INFO][2018-08-04 21:07:55,426] - terminated i-02b7950e91fa9f5d0
+[INFO][2018-08-04 21:07:55,887] - terminated i-0d45c78728ffb8503
+[INFO][2018-08-04 21:07:56,471] - deleted security groups: ['sg-6016a418']
+```

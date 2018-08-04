@@ -51,6 +51,6 @@ def create_security_group(region_name, sg_name, ip_list):
 
 
 def delete_security_groups(region_name, sg_id_list):
-    ec2 = boto3.resource('ec2', region_name=region_name)
+    ec2 = boto3.client('ec2', region_name=region_name)
     for sg_id in sg_id_list:
-        ec2.delete_security_group(GroupName=sg_id)
+        ec2.delete_security_group(GroupId=sg_id)

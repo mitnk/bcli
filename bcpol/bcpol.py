@@ -2,7 +2,9 @@
 import argparse
 import logging
 
-from deploy import do_deploy
+from bcdeploy import do_deploy
+from bcssh import do_ssh
+from bcinfo import get_info
 
 
 def main(args):
@@ -23,6 +25,14 @@ if __name__ == '__main__':
     parser_sub.add_argument('--config', '-f', type=str, default='bcpol.json',
                             help='specify the config file')
     parser_sub.set_defaults(func=do_deploy)
+
+    parser_sub = subparsers.add_parser('info', help='get states of BC')
+    parser_sub.set_defaults(func=get_info)
+
+    parser_sub = subparsers.add_parser('ssh', help='SSH to one node')
+    parser_sub.add_argument('name', nargs='?', type=str, default='',
+                            help='specify which node to connect')
+    parser_sub.set_defaults(func=do_ssh)
 
     args = parser.parse_args()
     args.func(args)

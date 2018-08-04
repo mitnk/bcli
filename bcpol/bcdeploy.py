@@ -6,7 +6,7 @@ import awsutils
 
 
 def get_session_id():
-    return datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+    return datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
 
 def do_deploy(args):
@@ -25,6 +25,14 @@ def do_deploy(args):
     dir_sessions = './sessions/{}'.format(session_id)
     if not os.path.exists(dir_sessions):
         os.makedirs(dir_sessions, exist_ok=True)
+    symlink_latest = os.path.abspath('./sessions/latest')
+    if os.path.lexists(symlink_latest):
+        os.remove(symlink_latest)
+    os.symlink(
+        os.path.abspath(dir_sessions),
+        symlink_latest,
+        target_is_directory=True,
+    )
 
     nodes_info = {}
     for region, num in configs['deploy'].get('nodes', {}).items():

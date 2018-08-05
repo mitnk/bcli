@@ -10,10 +10,6 @@ import bcutils
 from collections import defaultdict
 
 
-def generate_session_id():
-    return datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-
-
 def generate_ansible_inventory_file(dir_session, nodes_info):
     file_inv = os.path.join(dir_session, "ansible.ini")
     with open(file_inv, 'w') as f:
@@ -39,18 +35,8 @@ def do_deploy(args):
         print('deploy not found in configs')
         exit(1)
 
-    session_id = generate_session_id()
-    dir_session = './sessions/{}'.format(session_id)
-    if not os.path.exists(dir_session):
-        os.makedirs(dir_session, exist_ok=True)
-    symlink_latest = os.path.abspath('./sessions/latest')
-    if os.path.lexists(symlink_latest):
-        os.remove(symlink_latest)
-    os.symlink(
-        os.path.abspath(dir_session),
-        symlink_latest,
-        target_is_directory=True,
-    )
+    session_id = bcutils.generate_session_id()
+    dir_session = bcutils.create_dir_session(session_id)
 
     instance_list = []
     nodes_info = defaultdict(list)

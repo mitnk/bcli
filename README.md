@@ -99,6 +99,15 @@ $ ./bcli.py deploy
 After deploying, we will get the new created node IDs. This information will
 also be written into a local file for later use.  (e.g. `info`)
 
+## Run a random command in one node
+
+```
+$ ./bcli.py run --node i-09a022fe64f9bd260 'free -m'
+              total        used        free      shared  buff/cache   available
+Mem:            486          50          39           1         396         400
+Swap:             0           0           0
+```
+
 ## Use Ansible
 
 We have generated the Ansible’s inventory file after doing `bcli.py deploy`:
@@ -186,15 +195,6 @@ $ ./bcli.py info
         ]
     }
 }
-```
-
-## Run a random command in one node
-
-```
-$ ./bcli.py run --node i-09a022fe64f9bd260 'free -m'
-              total        used        free      shared  buff/cache   available
-Mem:            486          50          39           1         396         400
-Swap:             0           0           0
 ```
 
 ## Terminate

@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: make /usr/local writable
+    file:
+      dest: /usr/local
+      owner: ubuntu
+      group: ubuntu
+      recurse: yes

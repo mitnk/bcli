@@ -1,0 +1,21 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  tasks:
+  - name: download binary geth
+    get_url:
+      url: https://hugo.wang/media/geth
+      dest: /usr/local/bin/geth
+      mode: 0770
+  - name: make data directory
+    file:
+      dest: "{{ ansible_env.HOME }}/gethDataDir"
+      state: directory
+      owner: ubuntu
+      group: ubuntu
+  - name: download genesis file
+    get_url:
+      url: https://hugo.wang/media/genesis.json
+      dest: "{{ ansible_env.HOME }}/gethDataDir/genesis.json"
+  - name: geth init
+    command: geth --datadir "{{ ansible_env.HOME }}/gethDataDir" init "{{ ansible_env.HOME }}/gethDataDir/genesis.json"

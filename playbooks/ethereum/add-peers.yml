@@ -1,0 +1,14 @@
+---
+- hosts: all[0]
+  remote_user: ubuntu
+  tasks:
+  - name: upload bash script file
+    copy:
+      src: /tmp/add-peers.sh
+      dest: /tmp/add-peers.sh
+  - name: add peers
+    shell: bash /tmp/add-peers.sh
+  - name: remove the script on remote
+    file:
+      state: absent
+      path: /tmp/add-peers.sh

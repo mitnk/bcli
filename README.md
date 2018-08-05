@@ -113,41 +113,21 @@ Swap:             0           0           0
 We have generated the Ansible’s inventory file after doing `bcli.py deploy`:
 
 ```
-(bcli)$ cat sessions/latest/ansible.ini
+(bcli)$ cat ~/.bcli/sessions/latest/ansible.ini
 [us-west-1]
-i-00fdc0553bd437015  ansible_host=54.67.111.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-us-west-1.pem
-i-03bc8a0207f119257  ansible_host=54.153.8.243  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-us-west-1.pem
+i-00fdc0553bd437015  ansible_host=54.67.111.215  ansible_user=ubuntu  ansible_ssh_private_key_file=...
+...
 
 [ap-southeast-1]
-i-0cf3ae93815cf8587  ansible_host=52.221.188.215  ansible_user=ubuntu  ansible_ssh_private_key_file=/Users/mitnk/projects/bcli/bcli/sessions/latest/key-ap-southeast-1.pem
+i-0cf3ae93815cf8587  ansible_host=52.221.188.215  ansible_user=ubuntu  ansible_ssh_private_key_file=...
 ...
 ```
 
 With this Ubuntu image, we have to run following command first to make ansible
-work properly.
+work properly:
 
 ```
-(bcli)$ ansible -i sessions/latest/ansible.ini all -a hostname
-i-0cf3ae93815cf8587 | FAILED! => {
-    "changed": false,
-    "module_stderr": "Shared connection to 52.221.188.215 closed.\r\n",
-    "module_stdout": "/bin/sh: 1: /usr/bin/python: not found\r\n",
-    "msg": "MODULE FAILURE",
-...
-
 (bcli)$ ./bcli.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
-[INFO][2018-08-05 00:29:20,379] run cmd on i-00fdc0553bd437015 ...
-[INFO][2018-08-05 00:29:23,668] run cmd on i-03bc8a0207f119257 ...
-[INFO][2018-08-05 00:29:26,674] run cmd on i-0cf3ae93815cf8587 ...
-[INFO][2018-08-05 00:29:27,841] run cmd on i-0c4c41acab493f2e8 ...
-[INFO][2018-08-05 00:29:29,063] run cmd on i-0e3bacc2d4efa7127 ...
-
-(bcli)$ ansible -i sessions/latest/ansible.ini all -a hostname
-i-0e3bacc2d4efa7127 | SUCCESS | rc=0 >>
-ip-172-31-12-15
-i-0c4c41acab493f2e8 | SUCCESS | rc=0 >>
-ip-172-31-14-56
-...
 ```
 
 ## Get Information

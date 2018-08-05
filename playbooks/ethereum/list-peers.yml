@@ -1,0 +1,10 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  tasks:
+  - name: list peers
+    shell: cd && geth attach ipc:gethDataDir/geth.ipc --exec 'admin.peers'
+    register: shell_result
+  - name: print outputs
+    debug:
+      msg: "{{ shell_result.stdout_lines }}"

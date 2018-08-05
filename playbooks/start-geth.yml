@@ -1,7 +1,0 @@
----
-- hosts: all
-  remote_user: ubuntu
-  tasks:
-  - name: start geth
-    shell: "(cd && nohup geth --mine --minerthreads=1 --datadir gethDataDir --networkid 917 2>gethDataDir/geth.log &)"
-    # shell: "(cd && nohup geth --datadir gethDataDir --networkid 917 2>gethDataDir/geth.log &)"

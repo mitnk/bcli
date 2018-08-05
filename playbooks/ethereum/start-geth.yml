@@ -1,0 +1,17 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  tasks:
+  - name: start geth
+    shell: "(cd && nohup geth --mine --minerthreads=1 --datadir gethDataDir --networkid 917 2>gethDataDir/geth.log &)"
+    # shell: "(cd && nohup geth --datadir gethDataDir --networkid 917 2>gethDataDir/geth.log &)"
+  - name: fetch all peer URIs
+    shell: cd && geth attach ipc:gethDataDir/geth.ipc --exec 'admin.nodeInfo'
+    register: nodes_info
+  - name: copy nodes_info to local file
+    local_action: copy content="{{ nodes_info.stdout }}" dest="/tmp/ansible-eth-node-info-{{ inventory_hostname }}"
+  - name: generate node info list
+    local_action:
+      module: shell
+      cmd: python generate_node_list.py
+    run_once: True

@@ -1,0 +1,6 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  tasks:
+  - name: stop geth
+    shell: "kill -9 $(pgrep geth)"

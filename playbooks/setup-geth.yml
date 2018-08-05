@@ -19,3 +19,5 @@
       dest: "{{ ansible_env.HOME }}/gethDataDir/genesis.json"
   - name: geth init
     command: geth --datadir "{{ ansible_env.HOME }}/gethDataDir" init "{{ ansible_env.HOME }}/gethDataDir/genesis.json"
+  - name: create a new account
+    shell: "(cd; yes | geth account new --datadir gethDataDir)"

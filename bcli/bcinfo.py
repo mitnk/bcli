@@ -4,10 +4,9 @@ import bcutils
 
 
 def get_info(args):
-    file_deployed_info = bcutils.get_deployed_info_file()
-    if not os.path.exists(file_deployed_info):
-        print('deployed info file not found')
+    if bcutils.no_sessions():
+        print('no sessions, please deploy first')
         exit(1)
 
-    with open(file_deployed_info) as f:
+    with open(bcutils.get_deployed_info_file()) as f:
         print(f.read())

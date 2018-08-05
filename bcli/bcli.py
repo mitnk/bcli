@@ -9,11 +9,7 @@ from bcrun import do_run
 from bcterminate import do_terminate
 
 
-def main(args):
-    pass
-
-
-if __name__ == '__main__':
+def main():
     logging.basicConfig(
         level=logging.INFO,
         format='[%(levelname)s][%(asctime)s] %(message)s',
@@ -22,7 +18,6 @@ if __name__ == '__main__':
     logging.getLogger('boto3').setLevel(logging.WARN)
 
     parser = argparse.ArgumentParser(prog='bcli')
-    parser.set_defaults(func=main)
     subparsers = parser.add_subparsers()
 
     parser_sub = subparsers.add_parser('deploy',
@@ -52,3 +47,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     args.func(args)
+
+
+if __name__ == '__main__':
+    main()

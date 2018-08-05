@@ -54,10 +54,11 @@ def do_deploy(args):
 
     instance_list = []
     nodes_info = defaultdict(list)
+    key_name = bcutils.get_key_pair_name(session_id)
     for region_name, num in configs['deploy'].get('nodes', {}).items():
         logging.info('creating {} nodes in {}'.format(num, region_name))
         node_id_list = awsutils.create_ec2_instances(
-            region_name, num, session_id, dir_session)
+            region_name, num, key_name, dir_session)
         node_id_list = [x.instance_id for x in node_id_list]
         logging.info('created: {}'.format(node_id_list))
         for x in node_id_list:

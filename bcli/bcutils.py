@@ -31,6 +31,12 @@ def get_session_id():
         return json.load(f)['session_id']
 
 
+def get_key_pair_name(session_id=None):
+    if not session_id:
+        session_id = get_session_id()
+    return '{}{}'.format(constants.KEYPAIR_PREFIX, session_id)
+
+
 def get_security_group_name(session_id=None):
     if not session_id:
         session_id = get_session_id()
@@ -39,3 +45,8 @@ def get_security_group_name(session_id=None):
 
 def get_deployed_info_file():
     return './sessions/latest/deploy.json'
+
+
+def no_sessions():
+    file_deployed_info = get_deployed_info_file()
+    return not os.path.exists(file_deployed_info)

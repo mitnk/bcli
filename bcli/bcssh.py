@@ -16,4 +16,4 @@ def do_ssh(args):
     except (ValueError, TypeError):
         raise NotImplementedError
     cmd = get_ssh_cmd(region_name, node_info['ipv4'])
-    print(' '.join(cmd))
+    print(' '.join(["'{}'".format(x) if ' ' in x else x for x in cmd]))

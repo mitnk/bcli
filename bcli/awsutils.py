@@ -1,7 +1,7 @@
 import os
 import boto3
 
-import constants
+from bcli import constants
 
 
 def create_ec2_instances(region_name, num, key_name, dir_keys):

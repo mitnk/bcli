@@ -1,8 +1,8 @@
 import logging
 
-import awsutils
-import constants
-import bcutils
+from bcli import awsutils
+from bcli import constants
+from bcli import utils
 
 
 def do_terminate(args):
@@ -10,17 +10,17 @@ def do_terminate(args):
     1. terminate all EC2 instances
     2. terminate all security groups
     """
-    if bcutils.no_sessions():
+    if utils.no_sessions():
         print('no sessions, please deploy first')
         exit(1)
 
-    nodes_info = bcutils.get_all_nodes_info()
+    nodes_info = utils.get_all_nodes_info()
     for region_name in nodes_info:
         sgs_to_delete = set()
         sgs_others = set()
         logging.info('Terminating resources in {} ...'.format(region_name))
         inst_id_list = [x['id'] for x in nodes_info[region_name]]
-        key_name = bcutils.get_key_pair_name()
+        key_name = utils.get_key_pair_name()
         instances = awsutils.get_instances_info(region_name, inst_id_list)
         for item in instances:
             if item.state['Name'] == 'terminated':

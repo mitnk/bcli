@@ -4,24 +4,11 @@ A blockchain cli.
 
 ## Set Up
 
-### Setup bcli with Python Virtual ENV
-
 **NOTE:** Python 3 needed.
 
 ```
-$ python -m venv ~/.local/share/bcli
-$ source ~/.local/share/bcli/bin/activate
-# now we are inside the Virtual ENV
-(bcli)$
-
-# cd to project root dir, and then
-(bcli)$ cd ~/projects/bcli
-(bcli)$ pip install -U pip
-(bcli)$ pip install -r requirements.txt
-
-# cd to bcli package
-(bcli)$ cd bcli
-(bcli)$ ./bcli.py --help
+$ pip install bcli
+$ bcli --help
 ```
 
 You should see output like the following:
@@ -77,7 +64,7 @@ $ cat bcli.json
 ## Deploy EC2 Instances
 
 ```
-$ ./bcli.py deploy
+$ bcli.py deploy
 [INFO][2018-08-04 21:02:52,518] creating 3 nodes in ap-southeast-1
 [INFO][2018-08-04 21:02:54,347] created: ['i-06e91c0e14bca62bf', 'i-02b7950e91fa9f5d0', 'i-0d45c78728ffb8503']
 [INFO][2018-08-04 21:02:54,347] creating 2 nodes in us-west-1
@@ -102,7 +89,7 @@ also be written into a local file for later use.  (e.g. `info`)
 ## Run a random command in one node
 
 ```
-$ ./bcli.py run --node i-09a022fe64f9bd260 'free -m'
+$ bcli.py run --node i-09a022fe64f9bd260 'free -m'
               total        used        free      shared  buff/cache   available
 Mem:            486          50          39           1         396         400
 Swap:             0           0           0
@@ -127,7 +114,7 @@ With this Ubuntu image, we have to run following command first to make ansible
 work properly:
 
 ```
-(bcli)$ ./bcli.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
+(bcli)$ bcli.py run 'sudo ln -sf /usr/bin/python3 /usr/bin/python'
 ```
 
 ## Get Information
@@ -135,7 +122,7 @@ work properly:
 After a deployment, we can manipulate specific nodes.
 
 ```
-$ ./bcli.py info
+$ bcli.py info
 {
     "session_id": "20180804210252",
     "nodes": {
@@ -180,7 +167,7 @@ $ ./bcli.py info
 ## Terminate
 
 ```
-$ ./bcli.py terminate
+$ bcli.py terminate
 [INFO][2018-08-04 21:07:50,390] Terminating resources in us-west-1 ...
 [INFO][2018-08-04 21:07:51,822] - terminated i-07d82121fe957ef37
 [INFO][2018-08-04 21:07:52,414] - terminated i-09a022fe64f9bd260

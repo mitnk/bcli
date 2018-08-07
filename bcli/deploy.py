@@ -3,17 +3,17 @@ import logging
 import os.path
 import time
 
-import awsutils
-import bcutils
-
 from collections import defaultdict
+
+from bcli import awsutils
+from bcli import utils
 
 
 def generate_ansible_inventory_file(dir_session, nodes_info):
     file_inv = os.path.join(dir_session, "ansible.ini")
     with open(file_inv, 'w') as f:
         for region_name in nodes_info:
-            key_file = bcutils.get_key_path(region_name)
+            key_file = utils.get_key_path(region_name)
             f.write('[{}]\n'.format(region_name))
             for item in nodes_info[region_name]:
                 f.write('{}  '.format(item['id']))
@@ -34,12 +34,12 @@ def do_deploy(args):
         print('deploy not found in configs')
         exit(1)
 
-    session_id = bcutils.generate_session_id()
-    dir_session = bcutils.create_dir_session(session_id)
+    session_id = utils.generate_session_id()
+    dir_session = utils.create_dir_session(session_id)
 
     instance_list = []
     nodes_info = defaultdict(list)
-    key_name = bcutils.get_key_pair_name(session_id)
+    key_name = utils.get_key_pair_name(session_id)
     for region_name, num in configs['deploy'].get('nodes', {}).items():
         logging.info('creating {} nodes in {}'.format(num, region_name))
         node_id_list = awsutils.create_ec2_instances(
@@ -74,7 +74,7 @@ def do_deploy(args):
     logging.info('all instances are ready now')
 
     # assign a new scurity group to the instances
-    sg_name = bcutils.get_security_group_name(session_id)
+    sg_name = utils.get_security_group_name(session_id)
     for region_name in instance_info:
         sg = awsutils.create_security_group(region_name, sg_name, ip_list)
         for instance in instance_info[region_name]:

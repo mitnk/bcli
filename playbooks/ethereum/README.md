@@ -3,6 +3,7 @@
 ## Configs
 
 ```
+$ pip install ansible
 $ sudo mkdir -p /etc/ansible
 $ sudo ln -sf ~/.bcli/sessions/latest/ansible.ini /etc/ansible/hosts
 ```

@@ -2,7 +2,7 @@ import datetime
 import json
 import os.path
 
-import constants
+from bcli import constants
 
 
 def generate_session_id():

@@ -2,11 +2,11 @@
 import argparse
 import logging
 
-from bcdeploy import do_deploy
-from bcssh import do_ssh
-from bcinfo import get_info
-from bcrun import do_run
-from bcterminate import do_terminate
+from .deploy import do_deploy
+from .ssh import do_ssh
+from .info import get_info
+from .run import do_run
+from .terminate import do_terminate
 
 
 def main():

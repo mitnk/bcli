@@ -5,3 +5,5 @@ __pycache__/
 *.json
 *.retry
 sessions/
+dist/
+MANIFEST

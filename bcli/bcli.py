@@ -30,7 +30,7 @@ def main():
     parser_sub.set_defaults(func=get_info)
 
     parser_sub = subparsers.add_parser('ssh', help='SSH to one node')
-    parser_sub.add_argument('name', nargs='?', type=str, default='',
+    parser_sub.add_argument('node', nargs='?', type=str, default='',
                             help='specify which node to connect')
     parser_sub.set_defaults(func=do_ssh)
 

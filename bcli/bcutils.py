@@ -1,7 +1,6 @@
 import datetime
 import json
 import os.path
-import shutil
 
 import constants
 
@@ -41,7 +40,7 @@ def get_node_info(node_id=None):
         nodes = json.load(f)['nodes']
         for region, ins_list in nodes.items():
             for item in ins_list:
-                if node_id is None:
+                if not node_id:
                     return region, ins_list[0]
                 if item['id'] == node_id:
                     return region, item

@@ -13,9 +13,20 @@ def create_ec2_instances(region_name, num, key_name, dir_keys):
     os.chmod(key_file_local, 0o600)
 
     image_id = constants.IMAGES[region_name]
+
+    # BlockDeviceMappings via: https://stackoverflow.com/a/37888016/665869
     inst_list = ec2.create_instances(
         ImageId=image_id,
-        InstanceType='t2.nano',
+        InstanceType='c5.2xlarge',
+        BlockDeviceMappings=[
+            {
+                'DeviceName': '/dev/sda1',
+                'Ebs': {
+                    'VolumeSize': 25,
+                    'VolumeType': 'standard',
+                }
+            }
+        ],
         MinCount=num,
         MaxCount=num,
         KeyName=key_name,

@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='bcli',
-    version='0.7.0',
+    version='0.8.0',
     description='EC2 Cluster Creator',
     author='Hugo Wang',
     author_email='w@mitnk.com',

@@ -178,3 +178,7 @@ $ bcli.py terminate
 [INFO][2018-08-04 21:07:55,887] - terminated i-0d45c78728ffb8503
 [INFO][2018-08-04 21:07:56,471] - deleted security groups: ['sg-6016a418']
 ```
+
+## Others
+
+- If you failed with `bcli ssh`, restart your computer may help.
